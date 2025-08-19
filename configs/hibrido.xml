@@ -5,16 +5,16 @@
 	<feature automatic="selected" name="PortalAluno"/>
 	<feature automatic="selected" name="PortalProfessor"/>
 	<feature automatic="selected" name="Turmas"/>
-	<feature name="Frequencia Turma"/>
-	<feature name="Mural"/>
-	<feature automatic="selected" name="UsuÃ¡rio"/>
+	<feature manual="selected" name="Frequencia Turma"/>
+	<feature automatic="selected" name="Mural"/>
+	<feature automatic="selected" name="Usuário"/>
 	<feature automatic="selected" name="Gestor"/>
 	<feature automatic="selected" name="Professor"/>
 	<feature automatic="selected" name="Aluno"/>
-	<feature automatic="selected" name="MatÃ©rias"/>
+	<feature automatic="selected" name="Matérias"/>
 	<feature manual="selected" name="Presenciais"/>
-	<feature name="Online"/>
-	<feature name="NotificaÃ§Ã£o"/>
+	<feature manual="selected" name="Online"/>
+	<feature name="Notificação"/>
 	<feature name="Email"/>
 	<feature name="Whatsapp"/>
 </configuration>

@@ -5,7 +5,7 @@
 	<feature automatic="selected" name="PortalAluno"/>
 	<feature automatic="selected" name="PortalProfessor"/>
 	<feature automatic="selected" name="Turmas"/>
-	<feature name="Frequencia Turma"/>
+	<feature manual="selected" name="Frequencia Turma"/>
 	<feature name="Mural"/>
 	<feature automatic="selected" name="Usuário"/>
 	<feature automatic="selected" name="Gestor"/>

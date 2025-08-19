@@ -1,8 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <featureModel>
+	<properties>
+		<graphics key="autolayoutconstraints" value="false"/>
+		<graphics key="legendautolayout" value="true"/>
+		<graphics key="showconstraints" value="true"/>
+		<graphics key="showshortnames" value="false"/>
+		<graphics key="layout" value="horizontal"/>
+		<graphics key="showcollapsedconstraints" value="true"/>
+		<graphics key="legendhidden" value="false"/>
+		<graphics key="layoutalgorithm" value="1"/>
+	</properties>
 	<struct>
 		<and abstract="true" mandatory="true" name="gestao_educacional">
-			<feature name="Base"/>
+			<graphics key="collapsed" value="false"/>
+			<and abstract="true" mandatory="true" name="Portal">
+				<feature mandatory="true" name="PortalAluno"/>
+				<feature mandatory="true" name="PortalProfessor"/>
+			</and>
+			<and mandatory="true" name="Turmas">
+				<feature name="Frequencia Turma"/>
+				<feature name="Mural"/>
+			</and>
+			<and abstract="true" mandatory="true" name="Usuário">
+				<feature mandatory="true" name="Gestor"/>
+				<feature mandatory="true" name="Professor"/>
+				<feature mandatory="true" name="Aluno"/>
+			</and>
+			<or abstract="true" mandatory="true" name="Matérias">
+				<feature name="Presenciais"/>
+				<feature name="Online"/>
+			</or>
+			<or abstract="true" name="Notificação">
+				<feature name="Email"/>
+				<feature name="Whatsapp"/>
+			</or>
 		</and>
 	</struct>
+	<constraints>
+		<rule>
+			<imp>
+				<var>Online</var>
+				<var>Mural</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Notificação</var>
+				<var>Mural</var>
+			</imp>
+		</rule>
+	</constraints>
 </featureModel>
