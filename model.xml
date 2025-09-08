@@ -18,19 +18,22 @@
 				<feature mandatory="true" name="PortalProfessor"/>
 			</and>
 			<and mandatory="true" name="Turmas">
-				<feature name="Frequencia Turma"/>
+				<graphics key="collapsed" value="false"/>
+				<feature name="Frequencia"/>
 				<feature name="Mural"/>
+				<feature mandatory="true" name="Nota"/>
 			</and>
-			<and abstract="true" mandatory="true" name="Usuário">
+			<and abstract="true" mandatory="true" name="Usuario">
+				<graphics key="collapsed" value="false"/>
 				<feature mandatory="true" name="Gestor"/>
 				<feature mandatory="true" name="Professor"/>
 				<feature mandatory="true" name="Aluno"/>
 			</and>
-			<or abstract="true" mandatory="true" name="Matérias">
+			<or abstract="true" mandatory="true" name="Materias">
 				<feature name="Presenciais"/>
 				<feature name="Online"/>
 			</or>
-			<or abstract="true" name="Notificação">
+			<or abstract="true" name="Notificacao">
 				<feature name="Email"/>
 				<feature name="Whatsapp"/>
 			</or>
@@ -45,8 +48,14 @@
 		</rule>
 		<rule>
 			<imp>
-				<var>Notificação</var>
+				<var>Notificacao</var>
 				<var>Mural</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Presenciais</var>
+				<var>Frequencia</var>
 			</imp>
 		</rule>
 	</constraints>
