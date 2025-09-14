@@ -1,7 +1,7 @@
 package repositories.inmemory;
 
-import entities.post.Post;
-import shared.InMemoryRepository;
+import domain.entities.post.Post;
+import shared.repository.InMemoryRepository;
 
 public class PostRepository extends InMemoryRepository<Post> {
     public PostRepository() {

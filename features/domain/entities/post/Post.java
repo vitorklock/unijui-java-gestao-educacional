@@ -1,10 +1,10 @@
-package entities.post;
+package domain.entities.post;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.comment.Comment;
-import entities.user.User;
+import domain.entities.comment.Comment;
+import domain.entities.user.User;
 
 public class Post {
     private int id;

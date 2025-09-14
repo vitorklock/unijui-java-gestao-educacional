@@ -1,14 +1,14 @@
-package entities.classroom;
+package domain.entities.classroom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import entities.mural.Mural;
-import entities.subject.Subject;
-import entities.user.Student;
-import entities.user.Teacher;
+import domain.entities.mural.Mural;
+import domain.entities.subject.Subject;
+import domain.entities.user.Student;
+import domain.entities.user.Teacher;
 
 public class Classroom {
     private static int nextId = 1;

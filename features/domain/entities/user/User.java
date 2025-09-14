@@ -1,4 +1,4 @@
-package entities.user;
+package domain.entities.user;
 
 public abstract class User {
 	private static int nextId = 1;

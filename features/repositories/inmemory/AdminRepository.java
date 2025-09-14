@@ -1,7 +1,7 @@
 package repositories.inmemory;
 
-import entities.user.Admin;
-import shared.InMemoryRepository;
+import domain.entities.user.Admin;
+import shared.repository.InMemoryRepository;
 
 public class AdminRepository extends InMemoryRepository<Admin> {
     public AdminRepository() {

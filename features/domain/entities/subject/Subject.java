@@ -1,4 +1,4 @@
-package entities.subject;
+package domain.entities.subject;
 
 public class Subject {
     private static int nextId = 1;

@@ -1,6 +1,6 @@
-package entities.comment;
+package domain.entities.comment;
 
-import entities.user.User;
+import domain.entities.user.User;
 
 public class Comment {
     private User author;
