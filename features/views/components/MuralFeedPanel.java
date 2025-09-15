@@ -49,14 +49,14 @@ public class MuralFeedPanel extends JPanel {
 
         Classroom selected = app.getCurrentClassroom();
         if (selected == null) {
-            listPanel.add(emptyLabel("Select a classroom to see posts."));
+            listPanel.add(emptyLabel("Selecione uma turma para ver postagens."));
             refreshUI();
             return;
         }
 
         List<Post> posts = context.services().classrooms().listPosts(selected.getId());
         if (posts.isEmpty()) {
-            listPanel.add(emptyLabel("No posts yet."));
+            listPanel.add(emptyLabel("Sem postagens no momento."));
             refreshUI();
             return;
         }
@@ -72,8 +72,7 @@ public class MuralFeedPanel extends JPanel {
     }
 
     private JComponent buildPostCard(Post p) {
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(0xDADFE6)),
                 new EmptyBorder(10, 12, 10, 12)
@@ -87,18 +86,21 @@ public class MuralFeedPanel extends JPanel {
         JLabel lblTitle = new JLabel("Post " + p.getId() + " — " + p.getAutor().getName());
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD));
         header.add(lblTitle, BorderLayout.WEST);
-        card.add(header);
+        card.add(header, BorderLayout.NORTH);
 
-        // Body
+        // Body (apenas o texto do post) com fundo cinza ~20% mais escuro
         JLabel lblBody = new JLabel("<html>" + escape(p.getContent()) + "</html>");
-        lblBody.setBorder(new EmptyBorder(10, 6, 10, 6));
-        card.add(lblBody);
+        lblBody.setOpaque(true);
+        lblBody.setBackground(new Color(0xE6, 0xE6, 0xE6)); 
+        lblBody.setBorder(new EmptyBorder(10, 10, 10, 10));
+        card.add(lblBody, BorderLayout.CENTER);
 
-        // Comments
+        // Comments (ficam como estão, sem fundo)
         if (!p.getComments().isEmpty()) {
             JPanel comments = new JPanel();
             comments.setLayout(new BoxLayout(comments, BoxLayout.Y_AXIS));
-            comments.setBorder(new EmptyBorder(4, 18, 6, 6)); // left indent
+            comments.setBorder(new EmptyBorder(8, 18, 6, 6)); // indent
+            comments.setOpaque(false);
             for (Comment c : p.getComments()) {
                 JLabel author = new JLabel(c.getAuthor().getName());
                 author.setFont(author.getFont().deriveFont(Font.BOLD, 12f));
@@ -107,8 +109,13 @@ public class MuralFeedPanel extends JPanel {
                 comments.add(author);
                 comments.add(text);
             }
-            card.add(comments);
+            card.add(comments, BorderLayout.SOUTH);
         }
+
+        // Faz o card expandir em largura sem esticar altura infinita
+        card.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Dimension pref = card.getPreferredSize();
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, pref.height));
 
         return card;
     }

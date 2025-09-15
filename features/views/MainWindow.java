@@ -5,6 +5,7 @@ import javax.swing.*;
 import domain.entities.classroom.Classroom;
 import domain.entities.user.User;
 import main.bootstrap.AppContext;
+import views.LoginScreen;
 
 import java.awt.*;
 
@@ -20,7 +21,7 @@ public class MainWindow extends JFrame {
     private Classroom currentClassroom;
 
     // keep references to screens so we can refresh on navigation
-    private Login loginScreen;
+    private LoginScreen loginScreen;
     private HomeScreen homeScreen;
 
     public MainWindow(AppContext context) {
@@ -33,7 +34,7 @@ public class MainWindow extends JFrame {
         setContentPane(root);
 
         // instantiate screens (each receives MainWindow)
-        loginScreen = new Login(this);
+        loginScreen = new LoginScreen(this);
         homeScreen  = new HomeScreen(this);
 
         root.add(loginScreen, LOGIN);

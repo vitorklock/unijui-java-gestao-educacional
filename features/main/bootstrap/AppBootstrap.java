@@ -55,7 +55,7 @@ public class AppBootstrap {
 
 		// ---------- Users ----------
 		Admin admin = adminsRepo.save(new Admin("Admin", "admin@example.com", "0000-0000"));
-		Teacher teacher = teachersRepo.save(new Teacher("Lori", "smith@school.com", "1111-1111"));
+		Teacher teacher = teachersRepo.save(new Teacher("Lori Flores Machado Filho", "smith@school.com", "1111-1111"));
 		Student student1 = studentsRepo.save(new Student("João", "joao@unijui.com", "2222-2222"));
 		Student student2 = studentsRepo.save(new Student("Maria", "maria@unijui.com", "3333-3333"));
 

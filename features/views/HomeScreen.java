@@ -16,7 +16,7 @@ public class HomeScreen extends JPanel {
     private final MainWindow app;
 
     // header / actions
-    private final JLabel lblWelcome = new JLabel("Welcome", SwingConstants.LEFT);
+    private final JLabel lblWelcome = new JLabel("Olá, ", SwingConstants.LEFT);
     private final JComboBox<Classroom> cbClassrooms = new JComboBox<>();
 
     // role-specific toolbars
@@ -47,7 +47,7 @@ public class HomeScreen extends JPanel {
                                                           boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value == null) {
-                    setText("Select a classroom…");
+                    setText("Selecione uma turma…");
                 } else {
                     Classroom c = (Classroom) value;
                     setText("ID " + c.getId() + " — " + c.getSubject().getName());
@@ -58,7 +58,7 @@ public class HomeScreen extends JPanel {
         cbClassrooms.addActionListener(e -> onClassroomChanged());
         right.add(cbClassrooms);
 
-        JButton btnLogout = new JButton("Log out");
+        JButton btnLogout = new JButton("Sair");
         btnLogout.addActionListener(e -> {
             app.setCurrentUser(null);
             app.setCurrentClassroom(null);
@@ -70,11 +70,11 @@ public class HomeScreen extends JPanel {
         add(header, BorderLayout.NORTH);
 
         // ===== SIDE TOOLBARS (role-based) =====
-        teacherBar.add(new JButton("New Class"));
-        teacherBar.add(new JButton("Grades"));
-        teacherBar.add(new JButton("Students"));
+        teacherBar.add(new JButton("Nova turma"));
+        teacherBar.add(new JButton("Notas"));
+        teacherBar.add(new JButton("Alunos"));
 
-        studentBar.add(new JButton("My Grades"));
+        studentBar.add(new JButton("Minhas notas"));
 
         JPanel sideBars = new JPanel(new GridLayout(2, 1, 0, 6));
         sideBars.add(teacherBar);
@@ -90,14 +90,14 @@ public class HomeScreen extends JPanel {
     /** Called by MainWindow before showing this screen. */
     public void refreshFor(User u) {
         if (u == null) {
-            lblWelcome.setText("Welcome");
+            lblWelcome.setText("Bem-vindo(a)");
             teacherBar.setVisible(false);
             studentBar.setVisible(false);
             setClassroomsModel(List.of()); // clears combo + feed
             return;
         }
 
-        lblWelcome.setText("Welcome, " + u.getName());
+        lblWelcome.setText("Olá, " + u.getName());
 
         // determine role using instanceof (works regardless of helper methods)
         boolean isTeacher = (u instanceof Teacher);
