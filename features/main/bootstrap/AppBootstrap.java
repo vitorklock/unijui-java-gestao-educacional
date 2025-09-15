@@ -38,16 +38,14 @@ public class AppBootstrap {
 		// --- Notifications (FeatureIDE-friendly) ---
 		var notifications = new CompositeNotificationService();
 		
-		
-		
-		/*#if Email */
+		/*if[Email]*/	
 		notifications.add(new EmailNotificationService());
-	    /*#endif*/
+		/*end[Email]*/
 		
-		/*#if Whatsapp */
+		/*if[Whatsapp]*/	
 		notifications.add(new WhatsappNotificationService());
-	    /*#endif*/
-
+		/*end[Whatsapp]*/
+		
 		// --- Services ---
 		SubjectService subjectService = new SubjectService(subjectsRepo);
 		ClassroomService classroomService = new ClassroomService(classroomsRepo, subjectsRepo, studentsRepo,
