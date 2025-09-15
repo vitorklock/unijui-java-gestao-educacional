@@ -4,7 +4,6 @@ import javax.swing.*;
 
 import domain.entities.classroom.Classroom;
 import domain.entities.user.User;
-import main.bootstrap.AppBootstrap;
 import main.bootstrap.AppContext;
 
 import java.awt.*;
@@ -53,11 +52,6 @@ public class MainWindow extends JFrame {
             homeScreen.refreshFor(getCurrentUser());
         }
         cardLayout.show(root, screen);
-    }
-
-    public static void main(String[] args) {
-        AppContext ctx = AppBootstrap.init();
-        SwingUtilities.invokeLater(() -> new MainWindow(ctx).setVisible(true));
     }
 
 	public Classroom getCurrentClassroom() {
