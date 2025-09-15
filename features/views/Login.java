@@ -59,7 +59,7 @@ public class Login extends JPanel {
                 .toArray(String[]::new);
 
         // LISTA DE ALUNOS (DROPDOWN)
-        JComboBox<String> comboAlunos = new JComboBox<>(studentNames);
+        JComboBox<String> comboAlunos = new JComboBox<>();
         comboAlunos.setPreferredSize(new Dimension(300, 40));
         comboAlunos.setFont(new Font("Arial", Font.PLAIN, 16));
         gbc.gridy = 4;

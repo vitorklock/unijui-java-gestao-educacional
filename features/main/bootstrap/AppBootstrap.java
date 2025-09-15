@@ -19,54 +19,54 @@ import repositories.inmemory.TeacherRepository;
 
 public class AppBootstrap {
 
-	private AppBootstrap() {}
+	private AppBootstrap() {
+	}
 
-    public static AppContext init() {
-    	
-        // --- Repositories ---
-        var adminsRepo     = new AdminRepository();
-        var studentsRepo   = new StudentRepository();
-        var teachersRepo   = new TeacherRepository();
-        var subjectsRepo   = new SubjectRepository();
-        var classroomsRepo = new ClassroomRepository();
-        var postsRepo      = new PostRepository();
-        
-        var repos = new Repositories(
-                adminsRepo, studentsRepo, teachersRepo, subjectsRepo, classroomsRepo, postsRepo
-        );
+	public static AppContext init() {
 
+		// --- Repositories ---
+		var adminsRepo = new AdminRepository();
+		var studentsRepo = new StudentRepository();
+		var teachersRepo = new TeacherRepository();
+		var subjectsRepo = new SubjectRepository();
+		var classroomsRepo = new ClassroomRepository();
+		var postsRepo = new PostRepository();
 
-        // --- Notifications (FeatureIDE-friendly) ---
-        var notifications = new CompositeNotificationService();
-      
-             notifications.add(new EmailNotificationService());
-             notifications.add(new WhatsappNotificationService());
-        
+		var repos = new Repositories(adminsRepo, studentsRepo, teachersRepo, subjectsRepo, classroomsRepo, postsRepo);
 
-        // --- Services ---
-        SubjectService subjectService = new SubjectService(subjectsRepo);
-        ClassroomService classroomService = new ClassroomService(
-                classroomsRepo, subjectsRepo, studentsRepo, teachersRepo, postsRepo, notifications
-        );
-        
-        var services = new Services(subjectService, classroomService);
+		// --- Notifications (FeatureIDE-friendly) ---
+		var notifications = new CompositeNotificationService();
+		
+		/*#if Email */
+		notifications.add(new EmailNotificationService());
+	    /*#endif*/
+		
+		/*#if Whatsapp */
+		notifications.add(new WhatsappNotificationService());
+	    /*#endif*/
 
+		// --- Services ---
+		SubjectService subjectService = new SubjectService(subjectsRepo);
+		ClassroomService classroomService = new ClassroomService(classroomsRepo, subjectsRepo, studentsRepo,
+				teachersRepo, postsRepo, notifications);
 
-        // ---------- Users ----------
-        Admin admin = adminsRepo.save(new Admin("Admin", "admin@example.com", "0000-0000"));
-        Teacher teacher = teachersRepo.save(new Teacher("Lori", "smith@school.com", "1111-1111"));
-        Student student1 = studentsRepo.save(new Student("João", "joao@unijui.com", "2222-2222"));
-        Student student2 = studentsRepo.save(new Student("Maria", "maria@unijui.com", "3333-3333"));
+		var services = new Services(subjectService, classroomService);
 
-        Subject math = subjectService.create("Matemática");
-        Classroom c1 = classroomService.createClassroom(math.getId(), teacher.getId());
-        
-        classroomService.enrollStudent(c1.getId(), student1.getId());
-        classroomService.enrollStudent(c1.getId(), student2.getId());
-        classroomService.postMaterial(c1.getId(), teacher.getId(), "Capítulo 1: Domínios e Funções");
+		// ---------- Users ----------
+		Admin admin = adminsRepo.save(new Admin("Admin", "admin@example.com", "0000-0000"));
+		Teacher teacher = teachersRepo.save(new Teacher("Lori", "smith@school.com", "1111-1111"));
+		Student student1 = studentsRepo.save(new Student("João", "joao@unijui.com", "2222-2222"));
+		Student student2 = studentsRepo.save(new Student("Maria", "maria@unijui.com", "3333-3333"));
 
-        // --- Hand off everything to the UI via a context ---
-        return new AppContext(repos, services);
-    }
-	
+		Subject math = subjectService.create("Matemática");
+		Classroom c1 = classroomService.createClassroom(math.getId(), teacher.getId());
+
+		classroomService.enrollStudent(c1.getId(), student1.getId());
+		classroomService.enrollStudent(c1.getId(), student2.getId());
+		classroomService.postMaterial(c1.getId(), teacher.getId(), "Capítulo 1: Domínios e Funções");
+
+		// --- Hand off everything to the UI via a context ---
+		return new AppContext(repos, services);
+	}
+
 }
