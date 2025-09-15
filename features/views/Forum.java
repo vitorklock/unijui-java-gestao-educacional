@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Forum extends JPanel {
-    public Forum(TelaPrincipal telaPrincipal) {
+    public Forum(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

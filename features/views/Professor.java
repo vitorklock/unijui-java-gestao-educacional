@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Professor extends JPanel {
-    public Professor(TelaPrincipal telaPrincipal) {
+    public Professor(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

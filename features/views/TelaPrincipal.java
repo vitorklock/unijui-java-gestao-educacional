@@ -10,13 +10,14 @@ import main.bootstrap.ServiceRegistry;
 
 import java.awt.CardLayout;
 
-public class TelaPrincipal extends JFrame {
+public class MainWindow extends JFrame {
 
 	private final CardLayout cardLayout = new CardLayout();
 	private final JPanel painelPrincipal = new JPanel(cardLayout);
 	private ServiceRegistry registry;
+    private String ultimoMuralAcessado = "LOGIN";
 
-	public TelaPrincipal(ServiceRegistry registry) {
+	public MainWindow(ServiceRegistry registry) {
 		this.registry = registry;
 		
 		setTitle("Sistema de Gestão Educacional");
@@ -24,54 +25,43 @@ public class TelaPrincipal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
-		// Instanciando TODAS as telas e passando a referência desta janela
-		Login login = new Login(this);
-		MenuProfessor menuProfessor = new MenuProfessor(this);
-		MenuAluno menuAluno = new MenuAluno(this);
-		Mural mural = new Mural(this);
-		Aluno aluno = new Aluno(this);
-		Turma turma = new Turma(this);
-		Disciplinas disciplinas = new Disciplinas(this);
-		Notas notas = new Notas(this);
-		Forum forum = new Forum(this);
-		Arquivos arquivos = new Arquivos(this);
-		Frequencia frequencia = new Frequencia(this);
-		Professor professor = new Professor(this);
+        // Instanciando as telas (sem a SelecaoAluno)
+        Login login = new Login(this);
+        Mural muralProfessor = new Mural(this, "PROFESSOR");
+        Mural muralAluno = new Mural(this, "ALUNO");
+        Aluno aluno = new Aluno(this);
+        Arquivos arquivos = new Arquivos(this);
+        // ... instancie suas outras telas aqui da mesma forma
 
-		// Adicionando as telas ao "baralho"
-		painelPrincipal.add(login, "LOGIN");
-		painelPrincipal.add(menuProfessor, "MENU_PROFESSOR");
-		painelPrincipal.add(menuAluno, "MENU_ALUNO");
-		painelPrincipal.add(mural, "MURAL");
-		painelPrincipal.add(aluno, "ALUNO");
-		painelPrincipal.add(turma, "TURMA");
-		painelPrincipal.add(disciplinas, "DISCIPLINAS");
-		painelPrincipal.add(notas, "NOTAS");
-		painelPrincipal.add(forum, "FORUM");
-		painelPrincipal.add(arquivos, "ARQUIVOS");
-		painelPrincipal.add(frequencia, "FREQUENCIA");
-		painelPrincipal.add(professor, "PROFESSOR");
+        // Adicionando as telas ao "baralho"
+        painelPrincipal.add(login, "LOGIN");
+        painelPrincipal.add(muralProfessor, "MURAL_PROFESSOR");
+        painelPrincipal.add(muralAluno, "MURAL_ALUNO");
+        painelPrincipal.add(aluno, "ALUNO");
+        painelPrincipal.add(arquivos, "ARQUIVOS");
+        // ... adicione suas outras telas aqui
 
-		add(painelPrincipal);
-		// A primeira tela a ser exibida é a de Login
-		cardLayout.show(painelPrincipal, "LOGIN");
-	}
-
-	// Método para trocar a tela visível
-	public void changeWindow(String nomeDaTela) {
-		cardLayout.show(painelPrincipal, nomeDaTela);
-	}
+        add(painelPrincipal);
+    }
 	
 	public ServiceRegistry getRegistry() {
 		return this.registry;
 	}
 
-	// Método main para iniciar a aplicação
-	public static void main(String[] args) {
+    public void changeWindow(String nomeDaTela) {
+        if (nomeDaTela.equals("MURAL_PROFESSOR") || nomeDaTela.equals("MURAL_ALUNO")) {
+            this.ultimoMuralAcessado = nomeDaTela;
+        }
+        cardLayout.show(painelPrincipal, nomeDaTela);
+    }
 
-		ServiceRegistry services = AppBootstrap.init();
-		TelaPrincipal window = new TelaPrincipal(services);
+    public void voltarParaMural() {
+        changeWindow(this.ultimoMuralAcessado);
+    }
+
+    public static void main(String[] args) {
+    	ServiceRegistry services = AppBootstrap.init();
+    	MainWindow window = new MainWindow(services);
 		window.setVisible(true);
-
-	}
+    }
 }

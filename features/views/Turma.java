@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Turma extends JPanel {
-    public Turma(TelaPrincipal telaPrincipal) {
+    public Turma(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

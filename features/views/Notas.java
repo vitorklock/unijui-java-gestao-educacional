@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Notas extends JPanel {
-    public Notas(TelaPrincipal telaPrincipal) {
+    public Notas(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

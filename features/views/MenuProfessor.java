@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class MenuProfessor extends JPanel {
 
-    public MenuProfessor(TelaPrincipal telaPrincipal) {
+    public MenuProfessor(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -32,7 +32,7 @@ public class MenuProfessor extends JPanel {
         add(southPanel, BorderLayout.SOUTH);
     }
 
-    private JButton createMenuButton(String text, String screenName, TelaPrincipal tela) {
+    private JButton createMenuButton(String text, String screenName, MainWindow tela) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.addActionListener(e -> tela.changeWindow(screenName));

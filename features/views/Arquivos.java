@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Arquivos extends JPanel {
-    public Arquivos(TelaPrincipal telaPrincipal) {
+    public Arquivos(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

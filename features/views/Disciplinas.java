@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Disciplinas extends JPanel {
-    public Disciplinas(TelaPrincipal telaPrincipal) {
+    public Disciplinas(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

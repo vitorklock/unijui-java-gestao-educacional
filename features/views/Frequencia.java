@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Frequencia extends JPanel {
-    public Frequencia(TelaPrincipal telaPrincipal) {
+    public Frequencia(MainWindow telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
