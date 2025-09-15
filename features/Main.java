@@ -34,7 +34,7 @@ public class Main {
 
 		// ONLINE variant
 		notifications.add(new EmailNotificationService());
-//		notifications.add(new WhatsappNotificationService());
+		notifications.add(new WhatsappNotificationService());
 
 		// PRESENTIAL variant
 		// if (notifications.isEmpty()) System.out.println("(Notifications disabled in
@@ -73,10 +73,12 @@ public class Main {
 		});
 
 		// ---------- student1 comments on the post ----------
-		classroomService.commentOnPost(c1.getId(), student1.getId(), p1.getId(), "Tenho uma dúvida sobre o exercício 3.");
+		classroomService.commentOnPost(c1.getId(), student1.getId(), p1.getId(),
+				"Tenho uma dúvida sobre o exercício 3.");
 
 		// ---------- Teacher replies ----------
-		classroomService.commentOnPost(c1.getId(), teacher.getId(), p1.getId(), "Claro João, sobre o que você tem dúvida?");
+		classroomService.commentOnPost(c1.getId(), teacher.getId(), p1.getId(),
+				"Claro João, sobre o que você tem dúvida?");
 
 		// ---------- Show mural again ----------
 		System.out.println("\n-- Mural After Comments --");
