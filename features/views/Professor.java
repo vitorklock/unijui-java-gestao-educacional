@@ -1,4 +1,4 @@
-package gestao_educacional.features.views;
+package views;
 
 import javax.swing.*;
 import java.awt.*;
