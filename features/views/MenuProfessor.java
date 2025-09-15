@@ -26,7 +26,7 @@ public class MenuProfessor extends JPanel {
         add(menuGrid, BorderLayout.CENTER);
 
         JButton logoutButton = new JButton("Sair");
-        logoutButton.addActionListener(e -> telaPrincipal.trocarTela("LOGIN"));
+        logoutButton.addActionListener(e -> telaPrincipal.changeWindow("LOGIN"));
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         southPanel.add(logoutButton);
         add(southPanel, BorderLayout.SOUTH);
@@ -35,7 +35,7 @@ public class MenuProfessor extends JPanel {
     private JButton createMenuButton(String text, String screenName, TelaPrincipal tela) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 16));
-        button.addActionListener(e -> tela.trocarTela(screenName));
+        button.addActionListener(e -> tela.changeWindow(screenName));
         return button;
     }
 }

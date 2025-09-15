@@ -23,7 +23,7 @@ public class Aluno extends JPanel {
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btnVoltar = new JButton("<- Voltar (Menu Professor)");
-        btnVoltar.addActionListener(e -> telaPrincipal.trocarTela("MENU_PROFESSOR"));
+        btnVoltar.addActionListener(e -> telaPrincipal.changeWindow("MENU_PROFESSOR"));
         bottomPanel.add(btnVoltar);
         add(bottomPanel, BorderLayout.SOUTH);
     }

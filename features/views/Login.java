@@ -1,12 +1,15 @@
 package views;
 
 import javax.swing.*;
+
+import main.bootstrap.ServiceRegistry;
+
 import java.awt.*;
 
 public class Login extends JPanel {
 
     public Login(TelaPrincipal telaPrincipal) {
-        this.setLayout(new GridBagLayout()); // Centraliza o conteúdo
+		this.setLayout(new GridBagLayout()); // Centraliza o conteúdo
 
         JPanel painelCentral = new JPanel();
         painelCentral.setLayout(new BoxLayout(painelCentral, BoxLayout.Y_AXIS));
@@ -21,14 +24,14 @@ public class Login extends JPanel {
         btnProfessor.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnProfessor.setMaximumSize(new Dimension(250, 50));
         btnProfessor.setFont(new Font("Arial", Font.PLAIN, 16));
-        btnProfessor.addActionListener(e -> telaPrincipal.trocarTela("MENU_PROFESSOR"));
+        btnProfessor.addActionListener(e -> telaPrincipal.changeWindow("MENU_PROFESSOR"));
 
         // Botão Aluno
         JButton btnAluno = new JButton("Sou Aluno");
         btnAluno.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnAluno.setMaximumSize(new Dimension(250, 50));
         btnAluno.setFont(new Font("Arial", Font.PLAIN, 16));
-        btnAluno.addActionListener(e -> telaPrincipal.trocarTela("MENU_ALUNO"));
+        btnAluno.addActionListener(e -> telaPrincipal.changeWindow("MENU_ALUNO"));
 
         painelCentral.add(titulo);
         painelCentral.add(Box.createRigidArea(new Dimension(0, 40))); // Espaçamento
