@@ -2,6 +2,7 @@ package views;
 
 import javax.swing.*;
 
+import application.services.notification.EmailNotificationService;
 import domain.entities.classroom.Classroom;
 import domain.entities.user.Student;
 import domain.entities.user.Teacher;
@@ -81,7 +82,9 @@ public class HomeScreen extends JPanel {
         add(sideBars, BorderLayout.WEST);       
         
         // FEED
+        /*if[Mural]*/	
         add(this.feed, BorderLayout.CENTER);
+		/*end[Mural]*/
     }
 
     /** Called by MainWindow before showing this screen. */
