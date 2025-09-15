@@ -3,21 +3,21 @@ package gestao_educacional.features.views;
 import javax.swing.*;
 import java.awt.*;
 
-public class Mural extends JPanel {
-    public Mural(TelaPrincipal telaPrincipal) {
+public class Arquivos extends JPanel {
+    public Arquivos(TelaPrincipal telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel titleLabel = new JLabel("Mural de Avisos", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Arquivos da Disciplina", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(titleLabel, BorderLayout.NORTH);
 
-        JTextArea muralContent = new JTextArea(" - Aviso 1: A prova será na próxima semana.\n\n - Aviso 2: Não haverá aula no feriado.");
-        muralContent.setFont(new Font("Arial", Font.PLAIN, 16));
-        muralContent.setEditable(false);
-        add(new JScrollPane(muralContent), BorderLayout.CENTER);
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        listModel.addElement("Plano de Ensino.pdf");
+        listModel.addElement("Aula 01 - Introdução.pptx");
+        JList<String> lista = new JList<>(listModel);
+        add(new JScrollPane(lista), BorderLayout.CENTER);
 
-        // Botões de Voltar
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btnVoltarProf = new JButton("<- Voltar (Menu Professor)");
         btnVoltarProf.addActionListener(e -> telaPrincipal.trocarTela("MENU_PROFESSOR"));

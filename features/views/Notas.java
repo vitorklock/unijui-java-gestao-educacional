@@ -1,23 +1,26 @@
 package gestao_educacional.features.views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class Mural extends JPanel {
-    public Mural(TelaPrincipal telaPrincipal) {
+public class Notas extends JPanel {
+    public Notas(TelaPrincipal telaPrincipal) {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel titleLabel = new JLabel("Mural de Avisos", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Quadro de Notas", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(titleLabel, BorderLayout.NORTH);
+        
+        String[] colunas = {"Aluno", "G1", "G2", "Média Final"};
+        Object[][] dados = {
+            {"Vitor Klock", "8.0", "7.5", "7.75"},
+            {"Maria da Silva", "9.5", "9.0", "9.25"},
+        };
+        JTable tabela = new JTable(new DefaultTableModel(dados, colunas));
+        add(new JScrollPane(tabela), BorderLayout.CENTER);
 
-        JTextArea muralContent = new JTextArea(" - Aviso 1: A prova será na próxima semana.\n\n - Aviso 2: Não haverá aula no feriado.");
-        muralContent.setFont(new Font("Arial", Font.PLAIN, 16));
-        muralContent.setEditable(false);
-        add(new JScrollPane(muralContent), BorderLayout.CENTER);
-
-        // Botões de Voltar
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btnVoltarProf = new JButton("<- Voltar (Menu Professor)");
         btnVoltarProf.addActionListener(e -> telaPrincipal.trocarTela("MENU_PROFESSOR"));
@@ -26,7 +29,7 @@ public class Mural extends JPanel {
         JButton btnVoltarAluno = new JButton("<- Voltar (Menu Aluno)");
         btnVoltarAluno.addActionListener(e -> telaPrincipal.trocarTela("MENU_ALUNO"));
         bottomPanel.add(btnVoltarAluno);
-
+        
         add(bottomPanel, BorderLayout.SOUTH);
     }
 }
