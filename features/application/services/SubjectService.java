@@ -18,14 +18,14 @@ public class SubjectService implements SubjectServiceInterface {
 
     @Override
     public Subject create(String name) {
-        if (name == null || name.isBlank()) throw new ValidationException("Subject name is required");
+        if (name == null || name.isBlank()) throw new ValidationException("O nome da matéria é obrigatório");
         return subjects.save(new Subject(name.trim()));
     }
 
     @Override
     public Subject updateName(int subjectId, String newName) {
-        var s = subjects.findById(subjectId).orElseThrow(() -> new NotFoundException("Subject not found: " + subjectId));
-        if (newName == null || newName.isBlank()) throw new ValidationException("New name is required");
+        var s = subjects.findById(subjectId).orElseThrow(() -> new NotFoundException("Matéria não encontrada: " + subjectId));
+        if (newName == null || newName.isBlank()) throw new ValidationException("O novo nome é obrigatório");
         s.setName(newName.trim());
         subjects.save(s);
         return s;
@@ -38,7 +38,7 @@ public class SubjectService implements SubjectServiceInterface {
 
     @Override
     public Subject get(int subjectId) {
-        return subjects.findById(subjectId).orElseThrow(() -> new NotFoundException("Subject not found: " + subjectId));
+        return subjects.findById(subjectId).orElseThrow(() -> new NotFoundException("Matéria não encontrada: " + subjectId));
     }
 
     @Override

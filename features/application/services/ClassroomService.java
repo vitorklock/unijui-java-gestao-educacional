@@ -42,10 +42,10 @@ public class ClassroomService implements ClassroomServiceInterface {
 	@Override
 	public Classroom createClassroom(int subjectId, int teacherId) {
 		Subject subject = subjects.findById(subjectId)
-				.orElseThrow(() -> new NotFoundException("Subject not found: " + subjectId));
+				.orElseThrow(() -> new NotFoundException("Matéria não encontrada: " + subjectId));
 
 		Teacher teacher = teachers.findById(teacherId)
-				.orElseThrow(() -> new NotFoundException("Teacher not found: " + teacherId));
+				.orElseThrow(() -> new NotFoundException("Professor não encontrado: " + teacherId));
 
 		Classroom c = new Classroom(subject, teacher);
 
@@ -55,7 +55,7 @@ public class ClassroomService implements ClassroomServiceInterface {
 	@Override
 	public Classroom get(int classroomId) {
 		return classrooms.findById(classroomId)
-				.orElseThrow(() -> new NotFoundException("Classroom not found: " + classroomId));
+				.orElseThrow(() -> new NotFoundException("Turma não encontrada: " + classroomId));
 	}
 
 	@Override
@@ -63,32 +63,32 @@ public class ClassroomService implements ClassroomServiceInterface {
 		Classroom c = get(classroomId);
 
 		Student s = students.findById(studentId)
-				.orElseThrow(() -> new NotFoundException("Student not found: " + studentId));
+				.orElseThrow(() -> new NotFoundException("Aluno não encontrado: " + studentId));
 
 		c.addStudent(s);
 		classrooms.save(c);
 
-		notifications.notify(s, "You have been enrolled in " + c.getSubject().getName());
+		notifications.notify(s, "Você foi inscrito em " + c.getSubject().getName());
 	}
 
 	@Override
 	public Post postMaterial(int classroomId, int authorTeacherId, String content) {
 
 		if (content == null || content.isBlank())
-			throw new ValidationException("Content is required");
+			throw new ValidationException("O conteúdo é obrigatório");
 
 		Classroom c = get(classroomId);
 		Teacher teacher = teachers.findById(authorTeacherId)
-				.orElseThrow(() -> new NotFoundException("Teacher not found: " + authorTeacherId));
+				.orElseThrow(() -> new NotFoundException("Professor não encontrado: " + authorTeacherId));
 
 		if (!c.getTeacher().equals(teacher))
-			throw new ForbiddenOperationException("Only the class teacher can post material");
+			throw new ForbiddenOperationException("Apenas o professor dessa matéria pode postar materiais");
 
 		Post p = c.getMural().addPost(teacher, content.trim());
 		classrooms.save(c);
 		posts.save(p);
 
-		c.getStudents().forEach(stu -> notifications.notify(stu, "New material in " + c.getSubject().getName()));
+		c.getStudents().forEach(stu -> notifications.notify(stu, "Novo material postado em " + c.getSubject().getName()));
 		return p;
 	}
 
@@ -96,17 +96,17 @@ public class ClassroomService implements ClassroomServiceInterface {
 	public void commentOnPost(int classroomId, int authorUserId, int postId, String text) {
 
 		if (text == null || text.isBlank())
-			throw new ValidationException("Comment text is required");
+			throw new ValidationException("O texto do comentário é obrigatório");
 
 		Classroom c = get(classroomId);
 		User author = students.findById(authorUserId).map(s -> (User) s)
 				.or(() -> teachers.findById(authorUserId).map(t -> (User) t))
-				.orElseThrow(() -> new NotFoundException("User not found: " + authorUserId));
+				.orElseThrow(() -> new NotFoundException("Usuário não encontrado: " + authorUserId));
 
 		boolean ok = c.getMural().addComment(postId, author, text.trim());
 
 		if (!ok)
-			throw new NotFoundException("Post not found: " + postId);
+			throw new NotFoundException("Post não encontrado: " + postId);
 		
 		classrooms.save(c);
 	}
@@ -120,22 +120,22 @@ public class ClassroomService implements ClassroomServiceInterface {
 	public void assignGrade(int classroomId, int teacherId, int studentId, double grade) {
 		
 		if (grade < 0.0 || grade > 10.0)
-			throw new ValidationException("Grade must be between 0 and 10");
+			throw new ValidationException("A nota deve ser entre 0 e 10");
 		
 		Classroom c = get(classroomId);
 		Teacher t = teachers.findById(teacherId)
-				.orElseThrow(() -> new NotFoundException("Teacher not found: " + teacherId));
+				.orElseThrow(() -> new NotFoundException("Professor não encontrado: " + teacherId));
 		Student s = students.findById(studentId)
-				.orElseThrow(() -> new NotFoundException("Student not found: " + studentId));
+				.orElseThrow(() -> new NotFoundException("Aluno não encontrado: " + studentId));
 
 		if (!c.getTeacher().equals(t))
-			throw new ForbiddenOperationException("Only the class teacher can assign grades");
+			throw new ForbiddenOperationException("Apenas o professor da turma pode dar notas");
 		if (!c.hasStudent(s))
-			throw new ForbiddenOperationException("Student is not enrolled in this classroom");
+			throw new ForbiddenOperationException("Aluno não inscrito nessa turma");
 
 		c.setGrade(s, grade);
 		classrooms.save(c);
-		notifications.notify(s, "Your grade in " + c.getSubject().getName() + " is now " + grade);
+		notifications.notify(s, "Sua nota em " + c.getSubject().getName() + " agora é " + grade);
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class ClassroomService implements ClassroomServiceInterface {
 		Classroom c = get(classroomId);
 		
 		Student s = students.findById(studentId)
-				.orElseThrow(() -> new NotFoundException("Student not found: " + studentId));
+				.orElseThrow(() -> new NotFoundException("Aluno não encontrado: " + studentId));
 		
 		return c.getGrades(s);
 	}
@@ -151,7 +151,7 @@ public class ClassroomService implements ClassroomServiceInterface {
 	@Override
 	public List<Classroom> listByTeacher(int teacherId) {
 		var t = teachers.findById(teacherId)
-				.orElseThrow(() -> new NotFoundException("Teacher not found: " + teacherId));
+				.orElseThrow(() -> new NotFoundException("Professor não encontrado: " + teacherId));
 		
 		return classrooms.findAll().stream().filter(c -> c.getTeacher().equals(t)).toList();
 	}
@@ -159,7 +159,7 @@ public class ClassroomService implements ClassroomServiceInterface {
 	@Override
 	public List<Classroom> listByStudent(int studentId) {
 		var s = students.findById(studentId)
-				.orElseThrow(() -> new NotFoundException("Student not found: " + studentId));
+				.orElseThrow(() -> new NotFoundException("Aluno não encontrado: " + studentId));
 		
 		return classrooms.findAll().stream().filter(c -> c.hasStudent(s)).toList();
 	}
