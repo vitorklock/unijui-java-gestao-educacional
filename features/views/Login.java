@@ -2,13 +2,18 @@ package views;
 
 import javax.swing.*;
 
+import domain.entities.user.Student;
+import main.bootstrap.AppContext;
 import main.bootstrap.ServiceRegistry;
-
+import java.util.List;
+import java.util.Objects;
 import java.awt.*;
 
 public class Login extends JPanel {
 
-    public Login(MainWindow telaPrincipal) {
+    public Login(MainWindow mainWindow) {
+    	
+    	AppContext ctx = mainWindow.getContext();
 
         // Usamos GridBagLayout para alinhar os componentes verticalmente de forma elegante
         this.setLayout(new GridBagLayout());
@@ -27,7 +32,7 @@ public class Login extends JPanel {
         btnProfessor.setPreferredSize(new Dimension(300, 50));
         btnProfessor.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        btnProfessor.addActionListener(e -> telaPrincipal.trocarTela("MURAL_PROFESSOR"));
+        btnProfessor.addActionListener(e -> mainWindow.changeWindow("MURAL_PROFESSOR"));
         gbc.gridy = 1;
         gbc.insets = new Insets(10, 0, 10, 0);
         add(btnProfessor, gbc);
@@ -44,10 +49,17 @@ public class Login extends JPanel {
         gbc.gridy = 3;
         gbc.insets = new Insets(20, 0, 5, 0);
         add(labelAluno, gbc);
+        
+        List<Student> students = ctx.services().classrooms().listAllStudents();
+        
+        String[] studentNames = students.stream()
+                .map(Student::getName)
+                .filter(Objects::nonNull)
+                .sorted()
+                .toArray(String[]::new);
 
         // LISTA DE ALUNOS (DROPDOWN)
-        String[] alunos = {"(Selecione um aluno)", "Vitor Klock", "Maria da Silva", "João Pereira"};
-        JComboBox<String> comboAlunos = new JComboBox<>(alunos);
+        JComboBox<String> comboAlunos = new JComboBox<>(studentNames);
         comboAlunos.setPreferredSize(new Dimension(300, 40));
         comboAlunos.setFont(new Font("Arial", Font.PLAIN, 16));
         gbc.gridy = 4;
@@ -63,7 +75,7 @@ public class Login extends JPanel {
             if (comboAlunos.getSelectedIndex() <= 0) {
                 JOptionPane.showMessageDialog(this, "Por favor, selecione um aluno da lista.", "Seleção Inválida", JOptionPane.WARNING_MESSAGE);
             } else {
-                telaPrincipal.trocarTela("MURAL_ALUNO");
+                mainWindow.changeWindow("MURAL_ALUNO");
             }
         });
         gbc.gridy = 5;

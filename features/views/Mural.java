@@ -77,7 +77,7 @@ public class Mural extends JPanel {
         // --- BOTÃO DE SAIR (LOGOUT) ---
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton logoutButton = new JButton("Sair");
-        logoutButton.addActionListener(e -> telaPrincipal.trocarTela("LOGIN"));
+        logoutButton.addActionListener(e -> telaPrincipal.changeWindow("LOGIN"));
         bottomPanel.add(logoutButton);
         add(bottomPanel, BorderLayout.SOUTH);
     }
@@ -87,7 +87,7 @@ public class Mural extends JPanel {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setPreferredSize(new Dimension(100, 80));
-        button.addActionListener(e -> tela.trocarTela(screenName));
+        button.addActionListener(e -> tela.changeWindow(screenName));
         return button;
     }
 

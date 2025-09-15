@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import main.bootstrap.AppBootstrap;
+import main.bootstrap.AppContext;
 import main.bootstrap.ServiceRegistry;
 
 import java.awt.CardLayout;
@@ -14,11 +15,11 @@ public class MainWindow extends JFrame {
 
 	private final CardLayout cardLayout = new CardLayout();
 	private final JPanel painelPrincipal = new JPanel(cardLayout);
-	private ServiceRegistry registry;
+	private AppContext context;
     private String ultimoMuralAcessado = "LOGIN";
 
-	public MainWindow(ServiceRegistry registry) {
-		this.registry = registry;
+	public MainWindow(AppContext context) {
+		this.context = context;
 		
 		setTitle("Sistema de Gestão Educacional");
 		setSize(1024, 768);
@@ -26,26 +27,31 @@ public class MainWindow extends JFrame {
 		setLocationRelativeTo(null);
 
         // Instanciando as telas (sem a SelecaoAluno)
-        Login login = new Login(this);
-        Mural muralProfessor = new Mural(this, "PROFESSOR");
-        Mural muralAluno = new Mural(this, "ALUNO");
+		Login login = new Login(this);
         Aluno aluno = new Aluno(this);
         Arquivos arquivos = new Arquivos(this);
-        // ... instancie suas outras telas aqui da mesma forma
+        Disciplinas disciplinas = new Disciplinas(this);
+        Forum forum = new Forum(this);
+        Frequencia frequencia = new Frequencia(this);
+        Notas notas = new Notas(this);
+        Professor professor = new Professor(this);
+        Turma turma = new Turma(this);
 
-        // Adicionando as telas ao "baralho"
         painelPrincipal.add(login, "LOGIN");
-        painelPrincipal.add(muralProfessor, "MURAL_PROFESSOR");
-        painelPrincipal.add(muralAluno, "MURAL_ALUNO");
         painelPrincipal.add(aluno, "ALUNO");
         painelPrincipal.add(arquivos, "ARQUIVOS");
-        // ... adicione suas outras telas aqui
+        painelPrincipal.add(disciplinas, "DISCIPLINAS");
+        painelPrincipal.add(forum, "FORUM");
+        painelPrincipal.add(frequencia, "FREQUENCIA");
+        painelPrincipal.add(notas, "NOTAS");
+        painelPrincipal.add(professor, "PROFESSOR");
+        painelPrincipal.add(turma, "TURMA");
 
         add(painelPrincipal);
     }
 	
-	public ServiceRegistry getRegistry() {
-		return this.registry;
+	public AppContext getContext() {
+		return this.context;
 	}
 
     public void changeWindow(String nomeDaTela) {
@@ -60,8 +66,8 @@ public class MainWindow extends JFrame {
     }
 
     public static void main(String[] args) {
-    	ServiceRegistry services = AppBootstrap.init();
-    	MainWindow window = new MainWindow(services);
+    	AppContext ctx = AppBootstrap.init();
+    	MainWindow window = new MainWindow(ctx);
 		window.setVisible(true);
     }
 }
