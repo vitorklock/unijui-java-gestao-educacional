@@ -1,7 +1,7 @@
 package repositories.inmemory;
 
-import entities.user.Teacher;
-import shared.InMemoryRepository;
+import domain.entities.user.Teacher;
+import shared.repository.InMemoryRepository;
 
 public class TeacherRepository extends InMemoryRepository<Teacher> {
     public TeacherRepository() {

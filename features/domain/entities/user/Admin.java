@@ -1,4 +1,4 @@
-package entities.user;
+package domain.entities.user;
 
 public class Admin extends User {
     public Admin(String name, String email, String phone) {

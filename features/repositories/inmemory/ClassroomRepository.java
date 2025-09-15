@@ -1,8 +1,8 @@
 package repositories.inmemory;
 
-import entities.classroom.Classroom;
-import entities.subject.Subject;
-import shared.InMemoryRepository;
+import domain.entities.classroom.Classroom;
+import domain.entities.subject.Subject;
+import shared.repository.InMemoryRepository;
 
 public class ClassroomRepository extends InMemoryRepository<Classroom> {
     public ClassroomRepository() {

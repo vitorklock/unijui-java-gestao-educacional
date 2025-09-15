@@ -1,11 +1,11 @@
-package entities.mural;
+package domain.entities.mural;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.comment.Comment;
-import entities.post.Post;
-import entities.user.User;
+import domain.entities.comment.Comment;
+import domain.entities.post.Post;
+import domain.entities.user.User;
 
 public class Mural {
     private List<Post> posts;

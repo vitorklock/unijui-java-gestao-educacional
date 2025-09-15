@@ -1,4 +1,4 @@
-package shared;
+package shared.repository;
 
 import java.util.List;
 import java.util.Optional;

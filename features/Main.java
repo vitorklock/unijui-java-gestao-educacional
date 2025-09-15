@@ -1,68 +1,94 @@
 
-import entities.classroom.Classroom;
-import entities.mural.Mural;
-import entities.post.Post;
-import entities.subject.Subject;
-import entities.user.Admin;
-import entities.user.Student;
-import entities.user.Teacher;
+import application.services.ClassroomService;
+import application.services.SubjectService;
+import application.services.notification.CompositeNotificationService;
+import application.services.notification.EmailNotificationService;
+import application.services.notification.WhatsappNotificationService;
+import domain.entities.classroom.Classroom;
+import domain.entities.post.Post;
+import domain.entities.subject.Subject;
+import domain.entities.user.Admin;
+import domain.entities.user.Student;
+import domain.entities.user.Teacher;
+import repositories.inmemory.AdminRepository;
+import repositories.inmemory.ClassroomRepository;
+import repositories.inmemory.PostRepository;
+import repositories.inmemory.StudentRepository;
+import repositories.inmemory.SubjectRepository;
+import repositories.inmemory.TeacherRepository;
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("=== Educational Management SPL Demo ===");
+	public static void main(String[] args) {
+		System.out.println("=== Educational Management SPL - Services Demo ===");
 
-        // Users
-        Admin admin = new Admin("Admin", "admin@example.com", "0000-0000");
-        Teacher teacher = new Teacher("Dr. Smith", "smith@school.com", "1111-1111");
-        Student s1 = new Student("John", "john@school.com", "2222-2222");
-        Student s2 = new Student("Mary", "mary@school.com", "3333-3333");
+		// ---------- Repositories ----------
+		var adminsRepo = new AdminRepository();
+		var studentsRepo = new StudentRepository();
+		var teachersRepo = new TeacherRepository();
+		var subjectsRepo = new SubjectRepository();
+		var classroomsRepo = new ClassroomRepository();
+		var postsRepo = new PostRepository();
 
-        // Subject and classroom
-        Subject math = new Subject("Mathematics");
-        Classroom c1 = new Classroom(math, teacher);
+		// ---------- Notifications ----------
+		var notifications = new CompositeNotificationService();
 
-        // Enrollment
-        c1.addStudent(s1);
-        c1.addStudent(s2);
-        System.out.println("Classroom created: ID " + c1.getId() + " - " + c1.getSubject().getName());
-        System.out.println("Teacher: " + c1.getTeacher().getName());
-        System.out.println("Students: " + c1.getStudents().size());
+		// ONLINE variant
+		notifications.add(new EmailNotificationService());
+//		notifications.add(new WhatsappNotificationService());
 
-        // Teacher posts material to the class mural
-        Mural mural = c1.getMural();
-        Post p1 = mural.addPost(teacher, "Chapter 1: Sets and Functions");
-        System.out.println("Teacher posted a new material: " + p1);
+		// PRESENTIAL variant
+		// if (notifications.isEmpty()) System.out.println("(Notifications disabled in
+		// this variant)");
 
-        // Students view mural
-        System.out.println("\n-- Student view (John) --");
-        for (Post p : mural.getPosts()) {
-            System.out.println(p);
-            p.getComments().forEach(cm -> System.out.println("   " + cm));
-        }
+		// ---------- Services ----------
+		SubjectService subjectService = new SubjectService(subjectsRepo);
+		ClassroomService classroomService = new ClassroomService(classroomsRepo, subjectsRepo, studentsRepo,
+				teachersRepo, postsRepo, notifications);
 
-        // John comments
-        boolean ok = mural.addComment(p1.getId(), s1, "I have a question about exercise 3.");
-        System.out.println("John comment status: " + (ok ? "added" : "post not found"));
+		// ---------- Users ----------
+		var admin = adminsRepo.save(new Admin("Admin", "admin@example.com", "0000-0000"));
+		var teacher = teachersRepo.save(new Teacher("Lori", "smith@school.com", "1111-1111"));
+		var student1 = studentsRepo.save(new Student("João", "joao@unijui.com", "2222-2222"));
+		var student2 = studentsRepo.save(new Student("Maria", "maria@unijui.com", "3333-3333"));
 
-        // Teacher replies
-        ok = mural.addComment(p1.getId(), teacher, "Sure, John. Which part is unclear?");
-        System.out.println("Teacher reply status: " + (ok ? "added" : "post not found"));
+		Subject math = subjectService.create("Matemática");
 
-        // Show mural again
-        System.out.println("\n-- Mural after comments --");
-        for (Post p : mural.getPosts()) {
-            System.out.println(p);
-            p.getComments().forEach(cm -> System.out.println("   " + cm));
-        }
+		// ---------- Create classroom, enroll students ----------
+		Classroom c1 = classroomService.createClassroom(math.getId(), teacher.getId());
+		System.out.println("Created classroom: ID " + c1.getId() + " | Subject: " + c1.getSubject().getName()
+				+ " | Teacher: " + c1.getTeacher().getName());
 
-        // Teacher sets a grade for John
-        c1.setGrade(s1, 8.5);
-        System.out.println("\nGrade updated: " + s1.getName() + " -> " + c1.getGrades(s1));
+		classroomService.enrollStudent(c1.getId(), student1.getId());
+		classroomService.enrollStudent(c1.getId(), student2.getId());
 
-        // Student checks grade
-        Double g = c1.getGrades(s1);
-        System.out.println(s1.getName() + "'s grade in " + c1.getSubject().getName() + ": " + (g == null ? "N/A" : g));
+		// ---------- Teacher posts material ----------
+		Post p1 = classroomService.postMaterial(c1.getId(), teacher.getId(), "Capítulo 1: Domínios e Funções");
+		System.out.println("Posted material: " + p1);
 
-        System.out.println("\n=== Demo finished ===");
-    }
+		// ---------- List posts ----------
+		System.out.println("\n-- Mural Posts --");
+		classroomService.listPosts(c1.getId()).forEach(p -> {
+			System.out.println(p);
+			p.getComments().forEach(cm -> System.out.println("   " + cm));
+		});
+
+		// ---------- student1 comments on the post ----------
+		classroomService.commentOnPost(c1.getId(), student1.getId(), p1.getId(), "Tenho uma dúvida sobre o exercício 3.");
+
+		// ---------- Teacher replies ----------
+		classroomService.commentOnPost(c1.getId(), teacher.getId(), p1.getId(), "Claro João, sobre o que você tem dúvida?");
+
+		// ---------- Show mural again ----------
+		System.out.println("\n-- Mural After Comments --");
+		classroomService.listPosts(c1.getId()).forEach(p -> {
+			System.out.println(p);
+			p.getComments().forEach(cm -> System.out.println("   " + cm));
+		});
+
+		// ---------- Assign and read a grade ----------
+		classroomService.assignGrade(c1.getId(), teacher.getId(), student1.getId(), 8.5);
+		Double grade = classroomService.getGrade(c1.getId(), student1.getId());
+		System.out.println("\nGrade updated: " + student1.getName() + " -> " + grade);
+
+	}
 }

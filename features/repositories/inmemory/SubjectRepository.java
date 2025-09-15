@@ -1,7 +1,7 @@
 package repositories.inmemory;
 
-import entities.subject.Subject;
-import shared.InMemoryRepository;
+import domain.entities.subject.Subject;
+import shared.repository.InMemoryRepository;
 
 public class SubjectRepository extends InMemoryRepository<Subject> {
     public SubjectRepository() {
