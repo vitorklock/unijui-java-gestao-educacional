@@ -1,73 +1,62 @@
 package views;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 
+import domain.entities.classroom.Classroom;
+import domain.entities.user.User;
 import main.bootstrap.AppBootstrap;
 import main.bootstrap.AppContext;
-import main.bootstrap.ServiceRegistry;
 
-import java.awt.CardLayout;
+import java.awt.*;
 
 public class MainWindow extends JFrame {
+    public static final String LOGIN = "LOGIN";
+    public static final String HOME  = "HOME";
 
-	private final CardLayout cardLayout = new CardLayout();
-	private final JPanel painelPrincipal = new JPanel(cardLayout);
-	private AppContext context;
-    private String ultimoMuralAcessado = "LOGIN";
+    private final CardLayout cardLayout = new CardLayout();
+    private final JPanel root = new JPanel(cardLayout);
 
-	public MainWindow(AppContext context) {
-		this.context = context;
-		
-		setTitle("Sistema de Gestão Educacional");
-		setSize(1024, 768);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+    private final AppContext context;
+    private User currentUser;
+    private Classroom currentClassroom; // TODO fazer seleçao de turma
 
-        // Instanciando as telas (sem a SelecaoAluno)
-		Login login = new Login(this);
-        Aluno aluno = new Aluno(this);
-        Arquivos arquivos = new Arquivos(this);
-        Disciplinas disciplinas = new Disciplinas(this);
-        Forum forum = new Forum(this);
-        Frequencia frequencia = new Frequencia(this);
-        Notas notas = new Notas(this);
-        Professor professor = new Professor(this);
-        Turma turma = new Turma(this);
+    // keep references to screens so we can refresh on navigation
+    private Login loginScreen;
+    private HomeScreen homeScreen;
 
-        painelPrincipal.add(login, "LOGIN");
-        painelPrincipal.add(aluno, "ALUNO");
-        painelPrincipal.add(arquivos, "ARQUIVOS");
-        painelPrincipal.add(disciplinas, "DISCIPLINAS");
-        painelPrincipal.add(forum, "FORUM");
-        painelPrincipal.add(frequencia, "FREQUENCIA");
-        painelPrincipal.add(notas, "NOTAS");
-        painelPrincipal.add(professor, "PROFESSOR");
-        painelPrincipal.add(turma, "TURMA");
+    public MainWindow(AppContext context) {
+        this.context = context;
 
-        add(painelPrincipal);
+        setTitle("Educational Management System");
+        setSize(1024, 768);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setContentPane(root);
+
+        // instantiate screens (each receives MainWindow)
+        loginScreen = new Login(this);
+        homeScreen  = new HomeScreen(this);
+
+        root.add(loginScreen, LOGIN);
+        root.add(homeScreen,  HOME);
+
+        changeWindow(LOGIN);
     }
-	
-	public AppContext getContext() {
-		return this.context;
-	}
 
-    public void changeWindow(String nomeDaTela) {
-        if (nomeDaTela.equals("MURAL_PROFESSOR") || nomeDaTela.equals("MURAL_ALUNO")) {
-            this.ultimoMuralAcessado = nomeDaTela;
+    public AppContext getContext() { return this.context; }
+
+    public User getCurrentUser() { return currentUser; }
+    public void setCurrentUser(User user) { this.currentUser = user; }
+
+    public void changeWindow(String screen) {
+        if (HOME.equals(screen)) {
+            homeScreen.refreshFor(getCurrentUser()); // ensure role-based UI is updated
         }
-        cardLayout.show(painelPrincipal, nomeDaTela);
-    }
-
-    public void voltarParaMural() {
-        changeWindow(this.ultimoMuralAcessado);
+        cardLayout.show(root, screen);
     }
 
     public static void main(String[] args) {
-    	AppContext ctx = AppBootstrap.init();
-    	MainWindow window = new MainWindow(ctx);
-		window.setVisible(true);
+        AppContext ctx = AppBootstrap.init();
+        SwingUtilities.invokeLater(() -> new MainWindow(ctx).setVisible(true));
     }
 }

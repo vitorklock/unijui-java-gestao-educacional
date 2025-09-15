@@ -7,6 +7,10 @@ public abstract class User {
     protected String name;
     protected String email;
     protected String phone;
+    
+    public enum UserRole {
+        ADMIN, TEACHER, STUDENT
+    }
 
     public User(String name, String email, String phone) {
     	this.setId(nextId++);
@@ -14,6 +18,8 @@ public abstract class User {
         this.email = email;
         this.phone = phone;
     }
+    
+    public abstract UserRole role();
 
     public String getName() {
 		return name;
