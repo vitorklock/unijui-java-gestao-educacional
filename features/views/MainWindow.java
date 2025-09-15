@@ -18,7 +18,7 @@ public class MainWindow extends JFrame {
 
     private final AppContext context;
     private User currentUser;
-    private Classroom currentClassroom; // TODO fazer seleçao de turma
+    private Classroom currentClassroom;
 
     // keep references to screens so we can refresh on navigation
     private Login loginScreen;
@@ -50,7 +50,7 @@ public class MainWindow extends JFrame {
 
     public void changeWindow(String screen) {
         if (HOME.equals(screen)) {
-            homeScreen.refreshFor(getCurrentUser()); // ensure role-based UI is updated
+            homeScreen.refreshFor(getCurrentUser());
         }
         cardLayout.show(root, screen);
     }
@@ -59,4 +59,12 @@ public class MainWindow extends JFrame {
         AppContext ctx = AppBootstrap.init();
         SwingUtilities.invokeLater(() -> new MainWindow(ctx).setVisible(true));
     }
+
+	public Classroom getCurrentClassroom() {
+		return currentClassroom;
+	}
+
+	public void setCurrentClassroom(Classroom currentClassroom) {
+		this.currentClassroom = currentClassroom;
+	}
 }

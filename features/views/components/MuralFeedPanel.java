@@ -1,76 +1,66 @@
 package views.components;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import main.bootstrap.AppContext;
+import domain.entities.classroom.Classroom;
+import domain.entities.comment.Comment;
+import domain.entities.post.Post;
+import views.MainWindow;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-
-import domain.entities.comment.Comment;
-import domain.entities.post.Post;
-import main.bootstrap.AppContext;
-
 /**
- * Scrollable feed that renders classroom posts and comments.
- * Call setClassroomId(...) then reload().
+ * Scrollable feed that renders posts/comments for the classroom
+ * currently selected in MainWindow. Call reload() after changing
+ * MainWindow#setCurrentClassroom(...).
  */
 public class MuralFeedPanel extends JPanel {
 
+    private final MainWindow app;          // <- now we keep a reference to the app
     private final AppContext context;
-    private Integer classroomId;
 
     // UI
-    private final JPanel listPanel = new JPanel();   // vertical column of post "cards"
+    private final JPanel listPanel = new JPanel();
     private final JScrollPane scroll;
 
-    public MuralFeedPanel(AppContext context) {
-        this.context = context;
+    public MuralFeedPanel(MainWindow app) {
+        this.app = app;
+        this.context = app.getContext();
 
         setLayout(new BorderLayout());
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(8, 8, 8, 8));
 
-        scroll = new JScrollPane(listPanel,
+        scroll = new JScrollPane(
+                listPanel,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        );
         scroll.getVerticalScrollBar().setUnitIncrement(14);
         add(scroll, BorderLayout.CENTER);
     }
 
-    /** Which classroom to load posts from. */
-    public void setClassroomId(Integer classroomId) {
-        this.classroomId = classroomId;
-    }
-
-    /** Fetches posts from ClassroomService and re-renders the list. */
+    /** Fetches posts for the classroom selected in MainWindow and re-renders. */
     public void reload() {
         listPanel.removeAll();
 
-        if (classroomId == null) {
+        Classroom selected = app.getCurrentClassroom();
+        if (selected == null) {
             listPanel.add(emptyLabel("Select a classroom to see posts."));
             refreshUI();
             return;
         }
 
-        List<Post> posts = context.services().classrooms().listPosts(classroomId);
+        List<Post> posts = context.services().classrooms().listPosts(selected.getId());
         if (posts.isEmpty()) {
             listPanel.add(emptyLabel("No posts yet."));
             refreshUI();
             return;
         }
 
-        // newest first (optional)
         posts.stream()
              .sorted(Comparator.comparingInt(Post::getId).reversed())
              .forEach(p -> {
@@ -90,9 +80,9 @@ public class MuralFeedPanel extends JPanel {
         ));
         card.setBackground(Color.WHITE);
 
-        // Header (like your grey bar)
+        // Header
         JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(0xE9, 0xED, 0xF5)); // soft gray-blue
+        header.setBackground(new Color(0xE9, 0xED, 0xF5));
         header.setBorder(new EmptyBorder(8, 10, 8, 10));
         JLabel lblTitle = new JLabel("Post " + p.getId() + " — " + p.getAutor().getName());
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD));
@@ -137,7 +127,9 @@ public class MuralFeedPanel extends JPanel {
 
     private static String escape(String s) {
         if (s == null) return "";
-        return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+        return s.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
                 .replace("\n", "<br/>");
     }
 }

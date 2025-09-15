@@ -2,83 +2,145 @@ package views;
 
 import javax.swing.*;
 
+import domain.entities.classroom.Classroom;
+import domain.entities.user.Student;
+import domain.entities.user.Teacher;
 import domain.entities.user.User;
-import domain.entities.user.User.UserRole;
 import views.components.MuralFeedPanel;
 
 import java.awt.*;
+import java.util.List;
 
 public class HomeScreen extends JPanel {
     private final MainWindow app;
 
-    // shared
+    // header / actions
     private final JLabel lblWelcome = new JLabel("Welcome", SwingConstants.LEFT);
+    private final JComboBox<Classroom> cbClassrooms = new JComboBox<>();
 
-    // teacher-only area
+    // role-specific toolbars
     private final JPanel teacherBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    // student-only area
     private final JPanel studentBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
-    // shared content area (e.g., mural, notes list…)
-    private final JPanel content = new JPanel(new BorderLayout());
     
-    private MuralFeedPanel feed;
+    // feed
+    private final MuralFeedPanel feed;
 
     public HomeScreen(MainWindow app) {
         this.app = app;
+        this.feed = new MuralFeedPanel(app);       
 
-        setLayout(new BorderLayout(12,12));
-        setBorder(BorderFactory.createEmptyBorder(16,16,16,16));
+        setLayout(new BorderLayout(12, 12));
+        setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 
-        // HEADER
-        var header = new JPanel(new BorderLayout());
+        // ===== HEADER =====
+        JPanel header = new JPanel(new BorderLayout(8, 0));
         lblWelcome.setFont(lblWelcome.getFont().deriveFont(Font.BOLD, 18f));
         header.add(lblWelcome, BorderLayout.WEST);
 
-        var btnLogout = new JButton("Sair");
+        // right side: classroom combo + logout
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        cbClassrooms.setPreferredSize(new Dimension(260, 30));
+        cbClassrooms.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                          boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("Select a classroom…");
+                } else {
+                    Classroom c = (Classroom) value;
+                    setText("ID " + c.getId() + " — " + c.getSubject().getName());
+                }
+                return this;
+            }
+        });
+        cbClassrooms.addActionListener(e -> onClassroomChanged());
+        right.add(cbClassrooms);
+
+        JButton btnLogout = new JButton("Log out");
         btnLogout.addActionListener(e -> {
             app.setCurrentUser(null);
+            app.setCurrentClassroom(null);
             app.changeWindow(MainWindow.LOGIN);
         });
-        header.add(btnLogout, BorderLayout.EAST);
+        right.add(btnLogout);
+
+        header.add(right, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);
 
-        // TEACHER BAR
-        teacherBar.add(new JButton("Nova Turma"));
-        teacherBar.add(new JButton("Notas"));
-        teacherBar.add(new JButton("Alunos"));
-        // STUDENT BAR
-        studentBar.add(new JButton("Minhas Notas"));
+        // ===== SIDE TOOLBARS (role-based) =====
+        teacherBar.add(new JButton("New Class"));
+        teacherBar.add(new JButton("Grades"));
+        teacherBar.add(new JButton("Students"));
 
-        var topBars = new JPanel(new GridLayout(2, 1, 0, 6));
-        topBars.add(teacherBar);
-        topBars.add(studentBar);
-        add(topBars, BorderLayout.WEST);
+        studentBar.add(new JButton("My Grades"));
 
-        // CONTENT (placeholder – plug your mural/notes panels here)
-        content.add(new JLabel("Content area (mural, notes, etc.)"), BorderLayout.CENTER);
-        add(content, BorderLayout.CENTER);
+        JPanel sideBars = new JPanel(new GridLayout(2, 1, 0, 6));
+        sideBars.add(teacherBar);
+        sideBars.add(studentBar);
+        add(sideBars, BorderLayout.WEST);       
         
-        feed = new MuralFeedPanel(app.getContext());
-        add(feed, BorderLayout.CENTER);
+        // FEED
+        add(this.feed, BorderLayout.CENTER);
     }
 
     /** Called by MainWindow before showing this screen. */
     public void refreshFor(User u) {
         if (u == null) {
-            lblWelcome.setText("Bem vindo");
+            lblWelcome.setText("Welcome");
             teacherBar.setVisible(false);
             studentBar.setVisible(false);
+            setClassroomsModel(List.of()); // clears combo + feed
             return;
         }
+
         lblWelcome.setText("Welcome, " + u.getName());
-        UserRole r = u.role();
-        boolean isTeacher = (r == UserRole.TEACHER);
-        boolean isStudent = (r == UserRole.STUDENT);
+
+        // determine role using instanceof (works regardless of helper methods)
+        boolean isTeacher = (u instanceof Teacher);
+        boolean isStudent = (u instanceof Student);
 
         teacherBar.setVisible(isTeacher);
         studentBar.setVisible(isStudent);
+
+        // load classrooms for this user
+        List<Classroom> classes;
+        if (isTeacher) {
+            classes = app.getContext().services().classrooms().listByTeacher(u.getId());
+        } else if (isStudent) {
+            classes = app.getContext().services().classrooms().listByStudent(u.getId());
+        } else {
+            classes = List.of();
+        }
+        setClassroomsModel(classes);
         revalidate();
         repaint();
+    }
+
+    // ===== helpers =====
+
+    private void setClassroomsModel(List<Classroom> classes) {
+        DefaultComboBoxModel<Classroom> model = new DefaultComboBoxModel<>();
+        if (classes == null || classes.isEmpty()) {
+            model.addElement(null);
+            cbClassrooms.setModel(model);
+            cbClassrooms.setSelectedIndex(0);
+            app.setCurrentClassroom(null);
+            feed.reload();
+            return;
+        }
+        for (Classroom c : classes) model.addElement(c);
+        cbClassrooms.setModel(model);
+        cbClassrooms.setSelectedIndex(0);
+
+        Classroom first = classes.get(0);
+        app.setCurrentClassroom(first);
+        feed.reload();
+    }
+
+    private void onClassroomChanged() {
+        Classroom selected = (Classroom) cbClassrooms.getSelectedItem();
+        app.setCurrentClassroom(selected);
+        feed.reload();
     }
 }

@@ -6,6 +6,7 @@ import application.services.notification.CompositeNotificationService;
 import application.services.notification.EmailNotificationService;
 import application.services.notification.WhatsappNotificationService;
 import domain.entities.classroom.Classroom;
+import domain.entities.post.Post;
 import domain.entities.subject.Subject;
 import domain.entities.user.Admin;
 import domain.entities.user.Student;
@@ -37,6 +38,8 @@ public class AppBootstrap {
 		// --- Notifications (FeatureIDE-friendly) ---
 		var notifications = new CompositeNotificationService();
 		
+		
+		
 		/*#if Email */
 		notifications.add(new EmailNotificationService());
 	    /*#endif*/
@@ -63,8 +66,16 @@ public class AppBootstrap {
 
 		classroomService.enrollStudent(c1.getId(), student1.getId());
 		classroomService.enrollStudent(c1.getId(), student2.getId());
-		classroomService.postMaterial(c1.getId(), teacher.getId(), "Capítulo 1: Domínios e Funções");
-
+		Post post1 = classroomService.postMaterial(c1.getId(), teacher.getId(), "Capítulo 1: Domínios e Funções");
+		
+		classroomService.commentOnPost(c1.getId(), student1.getId(), post1.getId(), "Professor, terá desafio hoje?");
+		
+		Classroom c2 = classroomService.createClassroom(math.getId(), teacher.getId());
+		
+		classroomService.enrollStudent(c2.getId(), student1.getId());
+		classroomService.postMaterial(c2.getId(), teacher.getId(), "Capítulo 1: Ordem logaritmica");
+		
+		
 		// --- Hand off everything to the UI via a context ---
 		return new AppContext(repos, services);
 	}
