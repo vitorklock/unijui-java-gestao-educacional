@@ -26,7 +26,7 @@ public class MainWindow extends JFrame {
     public MainWindow(AppContext context) {
         this.context = context;
 
-        setTitle("Educational Management System");
+        setTitle("SGE - Sistema de Gestão Educacional");
         setSize(1024, 768);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
