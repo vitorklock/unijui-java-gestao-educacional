@@ -21,7 +21,7 @@ public class AppBootstrap {
 
 	private AppBootstrap() {}
 
-    public static ServiceRegistry init() {
+    public static AppContext init() {
     	
         // --- Repositories ---
         var adminsRepo     = new AdminRepository();
@@ -30,6 +30,11 @@ public class AppBootstrap {
         var subjectsRepo   = new SubjectRepository();
         var classroomsRepo = new ClassroomRepository();
         var postsRepo      = new PostRepository();
+        
+        var repos = new Repositories(
+                adminsRepo, studentsRepo, teachersRepo, subjectsRepo, classroomsRepo, postsRepo
+        );
+
 
         // --- Notifications (FeatureIDE-friendly) ---
         var notifications = new CompositeNotificationService();
@@ -43,6 +48,9 @@ public class AppBootstrap {
         ClassroomService classroomService = new ClassroomService(
                 classroomsRepo, subjectsRepo, studentsRepo, teachersRepo, postsRepo, notifications
         );
+        
+        var services = new Services(subjectService, classroomService);
+
 
         // ---------- Users ----------
         Admin admin = adminsRepo.save(new Admin("Admin", "admin@example.com", "0000-0000"));
@@ -57,11 +65,8 @@ public class AppBootstrap {
         classroomService.enrollStudent(c1.getId(), student2.getId());
         classroomService.postMaterial(c1.getId(), teacher.getId(), "Capítulo 1: Domínios e Funções");
 
-        // --- Hand off everything to the UI via a registry ---
-        return new ServiceRegistry(
-                adminsRepo, studentsRepo, teachersRepo, subjectsRepo, classroomsRepo, postsRepo,
-                subjectService, classroomService, notifications
-        );
+        // --- Hand off everything to the UI via a context ---
+        return new AppContext(repos, services);
     }
 	
 }
